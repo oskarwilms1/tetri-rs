@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 
-use super::assets::background::Background;
+use crate::assets::tetrimino_textures::square::Square;
+
+use crate::assets::background::background::Background;
 
 pub struct StartupPlugin;
 
@@ -17,6 +19,5 @@ pub fn setup(
 ) {
     commands.spawn(Camera2d);
     let game_background = Background::new(&mut meshes, &mut materials, 800., 1000.);
-
     commands.spawn(game_background);
 }

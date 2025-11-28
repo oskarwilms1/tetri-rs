@@ -1,9 +1,7 @@
 use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
 
-use crate::assets::tetrimino_textures::square::Square;
-
-use crate::assets::background::background::Background;
-
+use crate::bundles::tetrimino::*;
 pub struct StartupPlugin;
 
 impl Plugin for StartupPlugin {
@@ -14,10 +12,17 @@ impl Plugin for StartupPlugin {
 
 pub fn setup(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    asset_server: Res<AssetServer>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
-    commands.spawn(Camera2d);
-    let game_background = Background::new(&mut meshes, &mut materials, 800., 1000.);
-    commands.spawn(game_background);
+    let window: &Window = window_query.single().unwrap();
+
+    commands.spawn(camera(window));
+    commands.spawn(tetrimino(&asset_server, window));
+}
+fn camera(window: &Window) -> (Camera2d, Transform) {
+    (
+        Camera2d,
+        Transform::from_xyz(window.width() / 2., window.height() / 2., 0.),
+    )
 }

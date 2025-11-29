@@ -1,1 +1,1 @@
-pub mod tetrimino_I_cells;
+pub mod tetrimino_i_cells;

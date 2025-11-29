@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
 use crate::board::grid::*;
+use crate::board::tetrimino::*;
 
 pub struct StartupPlugin;
 
@@ -29,6 +30,13 @@ pub fn game_setup(
     commands.spawn_batch(empty_grid(
         &cell_mesh,
         &cell_material,
+        window_x_offset,
+        window_y_offset,
+    ));
+    commands.spawn(tetrimino(
+        TetriminoVariant::I,
+        cell_mesh,
+        materials,
         window_x_offset,
         window_y_offset,
     ));

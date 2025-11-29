@@ -7,10 +7,10 @@ pub static TETRINIMO_I_CELLS: Lazy<HashMap<i32, [Vec3; 4]>> = Lazy::new(|| {
         (
             0,
             [
+                Vec3::new(0., -1., 0.),
                 Vec3::new(1., -1., 0.),
                 Vec3::new(2., -1., 0.),
                 Vec3::new(3., -1., 0.),
-                Vec3::new(4., -1., 0.),
             ],
         ),
         (
@@ -25,10 +25,10 @@ pub static TETRINIMO_I_CELLS: Lazy<HashMap<i32, [Vec3; 4]>> = Lazy::new(|| {
         (
             2,
             [
+                Vec3::new(0., -1., 0.),
                 Vec3::new(1., -1., 0.),
                 Vec3::new(2., -1., 0.),
                 Vec3::new(3., -1., 0.),
-                Vec3::new(4., -1., 0.),
             ],
         ),
         (

@@ -17,7 +17,7 @@ pub fn empty_grid(
                 Transform::from_xyz(
                     x_offset + x as f32 * CELL_SIZE,
                     y_offset - y as f32 * CELL_SIZE,
-                    0.,
+                    0.1,
                 )
                 .with_scale(Vec3::splat(CELL_SIZE - CELL_BORDER_THICKNESS)),
             ));

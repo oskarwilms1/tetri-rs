@@ -3,6 +3,7 @@ use bevy::window::PrimaryWindow;
 
 use crate::board::grid::*;
 use crate::board::tetrimino::*;
+use crate::board::tetrimino_square::TetriminoVariant;
 
 pub struct StartupPlugin;
 
@@ -22,22 +23,25 @@ pub fn game_setup(
     let window: &Window = window_query.single().unwrap();
     let cell_mesh: Handle<Mesh> = meshes.add(Rectangle::default());
     let cell_material: Handle<ColorMaterial> = materials.add(ColorMaterial::default());
-    let window_x_offset: f32 = -window.width() / 2.;
-    let window_y_offset: f32 = window.height() / 2.;
+    let tetrimino_cell_color: Handle<ColorMaterial> =
+        materials.add(ColorMaterial::from_color(Color::BLACK));
+    let x_offset: f32 = -window.width() / 2.;
+    let y_offset: f32 = window.height() / 2.;
     // Spawn camera
     commands.spawn(Camera2d);
     // Spawn empty grid with default assets
-    commands.spawn_batch(empty_grid(
+    spawn_grid(
+        &mut commands,
         &cell_mesh,
         &cell_material,
-        window_x_offset,
-        window_y_offset,
-    ));
+        x_offset,
+        y_offset,
+    );
     commands.spawn(tetrimino(
-        TetriminoVariant::I,
-        cell_mesh,
-        materials,
-        window_x_offset,
-        window_y_offset,
+        &TetriminoVariant::I,
+        &cell_mesh,
+        &tetrimino_cell_color,
+        x_offset,
+        y_offset,
     ));
 }

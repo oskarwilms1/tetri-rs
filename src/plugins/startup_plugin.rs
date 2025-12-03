@@ -2,8 +2,8 @@ use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
 use crate::board::grid::*;
-use crate::board::tetrimino::*;
 use crate::board::tetrimino_square::TetriminoVariant;
+use crate::plugins::assets_plugin::GameAssets;
 
 pub struct StartupPlugin;
 
@@ -15,16 +15,15 @@ impl Plugin for StartupPlugin {
 
 pub fn game_setup(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    tetrimino_assets: ResMut<GameAssets>,
     window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
     // Prepare default assets
     let window: &Window = window_query.single().unwrap();
-    let cell_mesh: Handle<Mesh> = meshes.add(Rectangle::default());
-    let cell_material: Handle<ColorMaterial> = materials.add(ColorMaterial::default());
-    let tetrimino_cell_color: Handle<ColorMaterial> =
-        materials.add(ColorMaterial::from_color(Color::BLACK));
+    let cell_mesh: &Handle<Mesh> = &tetrimino_assets.cell_mesh;
+
+    let background_material: &Handle<ColorMaterial> = &tetrimino_assets.background_material;
+    let tetrimino_cell_color: &Handle<ColorMaterial> = &tetrimino_assets.tetrimino_i_material;
     let x_offset: f32 = -window.width() / 2.;
     let y_offset: f32 = window.height() / 2.;
     // Spawn camera
@@ -32,16 +31,11 @@ pub fn game_setup(
     // Spawn empty grid with default assets
     spawn_grid(
         &mut commands,
-        &cell_mesh,
-        &cell_material,
+        cell_mesh,
+        background_material,
+        TetriminoVariant::I,
+        tetrimino_cell_color,
         x_offset,
         y_offset,
     );
-    commands.spawn(tetrimino(
-        &TetriminoVariant::I,
-        &cell_mesh,
-        &tetrimino_cell_color,
-        x_offset,
-        y_offset,
-    ));
 }

@@ -4,7 +4,9 @@ mod board;
 mod config;
 mod plugins;
 
-use crate::plugins::{controls_plugin::ControlsPlugin, startup_plugin::StartupPlugin};
+use crate::plugins::{
+    assets_plugin::AssetsPlugin, controls_plugin::ControlsPlugin, startup_plugin::StartupPlugin,
+};
 
 fn main() {
     App::new()
@@ -24,6 +26,7 @@ fn main() {
             ..default()
         }))
         //.insert_resource(ClearColor(Color::srgb(0., 0., 0.)))
+        .add_plugins(AssetsPlugin)
         .add_plugins(StartupPlugin)
         .add_plugins(ControlsPlugin)
         .run();

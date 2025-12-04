@@ -57,7 +57,7 @@ pub fn spawn_grid(
             tetrimino_variant,
             cell_mesh,
             tetrinimo_i_material,
-            0.,
+            3. * CELL_SIZE,
             0.,
         ))
         .id();

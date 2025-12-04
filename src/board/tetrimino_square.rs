@@ -2,21 +2,32 @@ use bevy::prelude::*;
 
 use crate::config::{
     grid::grid_config::{CELL_BORDER_THICKNESS, CELL_SIZE},
-    tetrimino::static_cells::tetrimino_i_cells::TETRIMINO_I_CELLS,
+    tetrimino::static_cells::{
+        tetrimino_i_cells::TETRIMINO_I_CELLS, tetrimino_j_cells::TETRIMINO_J_CELLS,
+        tetrimino_l_cells::TETRIMINO_L_CELLS, tetrimino_o_cells::TETRIMINO_O_CELLS,
+        tetrimino_s_cells::TETRIMINO_S_CELLS, tetrimino_t_cells::TETRIMINO_T_CELLS,
+        tetrimino_z_cells::TETRIMINO_Z_CELLS,
+    },
 };
 
 pub enum TetriminoVariant {
     I,
-    //O,
-    //T,
-    //S,
-    //Z,
-    //J,
-    //L,
+    O,
+    T,
+    S,
+    Z,
+    J,
+    L,
 }
 pub fn tetrimino_cell_data(variant: &TetriminoVariant) -> [[Vec3; 4]; 4] {
     match variant {
         TetriminoVariant::I => TETRIMINO_I_CELLS,
+        TetriminoVariant::O => TETRIMINO_O_CELLS,
+        TetriminoVariant::T => TETRIMINO_T_CELLS,
+        TetriminoVariant::S => TETRIMINO_S_CELLS,
+        TetriminoVariant::Z => TETRIMINO_Z_CELLS,
+        TetriminoVariant::J => TETRIMINO_J_CELLS,
+        TetriminoVariant::L => TETRIMINO_L_CELLS,
     }
 }
 

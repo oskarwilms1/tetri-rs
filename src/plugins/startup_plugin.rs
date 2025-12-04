@@ -1,8 +1,10 @@
 #![allow(clippy::needless_pass_by_value)]
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
+use rand::Rng;
 
 use crate::board::grid::spawn_grid;
+use crate::board::tetrimino::{tetrimino, Tetrimino};
 use crate::board::tetrimino_square::TetriminoVariant;
 use crate::plugins::assets_plugin::GameAssets;
 
@@ -30,11 +32,23 @@ pub fn game_setup(
     // Spawn camera
     commands.spawn(Camera2d);
     // Spawn empty grid with default assets
+    let mut rng = rand::rng();
+    let tetrimino_variants: &[TetriminoVariant] = &[
+        TetriminoVariant::I,
+        TetriminoVariant::O,
+        TetriminoVariant::T,
+        TetriminoVariant::S,
+        TetriminoVariant::Z,
+        TetriminoVariant::J,
+        TetriminoVariant::L,
+    ];
+    let rng_idx: usize = rng.random_range(0..=6);
+    let rng_tetrimino_variant: &TetriminoVariant = &tetrimino_variants[rng_idx];
     spawn_grid(
         &mut commands,
         cell_mesh,
         background_material,
-        &TetriminoVariant::I,
+        rng_tetrimino_variant,
         tetrimino_cell_color,
         x_offset,
         y_offset,

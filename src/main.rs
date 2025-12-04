@@ -1,3 +1,5 @@
+#![warn(clippy::pedantic)]
+
 use bevy::prelude::*;
 
 mod board;

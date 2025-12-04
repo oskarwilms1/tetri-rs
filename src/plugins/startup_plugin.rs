@@ -1,7 +1,8 @@
+#![allow(clippy::needless_pass_by_value)]
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
-use crate::board::grid::*;
+use crate::board::grid::spawn_grid;
 use crate::board::tetrimino_square::TetriminoVariant;
 use crate::plugins::assets_plugin::GameAssets;
 
@@ -33,7 +34,7 @@ pub fn game_setup(
         &mut commands,
         cell_mesh,
         background_material,
-        TetriminoVariant::I,
+        &TetriminoVariant::I,
         tetrimino_cell_color,
         x_offset,
         y_offset,

@@ -1,3 +1,4 @@
+#![allow(clippy::needless_pass_by_value)]
 use crate::{
     board::{tetrimino::Tetrimino, tetrimino_square::TetriminoSquare},
     config::grid::grid_config::{CELL_SIZE, COLUMN_AMOUNT},
@@ -89,7 +90,7 @@ fn corrected_translation(
     movement_vector: &Vec3,
 ) -> Vec3 {
     let mut new_position: Vec3 = tetrimino_position + movement_vector;
-    for child_position in children_positions.iter() {
+    for child_position in children_positions {
         let adjusted_position = child_position + new_position;
         new_position.x += left_border_correction(adjusted_position.x);
         new_position.x += right_border_correction(adjusted_position.x);

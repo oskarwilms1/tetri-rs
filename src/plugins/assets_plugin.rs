@@ -1,4 +1,6 @@
-use bevy::color::palettes::tailwind::*;
+use bevy::color::palettes::tailwind::{
+    BLUE_500, CYAN_500, GREEN_500, ORANGE_500, PURPLE_500, RED_500, YELLOW_500,
+};
 use bevy::prelude::*;
 
 #[derive(Resource, Default)]

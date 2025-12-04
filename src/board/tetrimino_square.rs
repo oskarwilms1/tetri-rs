@@ -1,10 +1,8 @@
-use std::collections::HashMap;
-
 use bevy::prelude::*;
 
 use crate::config::{
     grid::grid_config::{CELL_BORDER_THICKNESS, CELL_SIZE},
-    tetrimino::static_cells::tetrimino_i_cells::TETRINIMO_I_CELLS,
+    tetrimino::static_cells::tetrimino_i_cells::TETRIMINO_I_CELLS,
 };
 
 pub enum TetriminoVariant {
@@ -16,20 +14,20 @@ pub enum TetriminoVariant {
     //J,
     //L,
 }
-pub fn tetrimino_cell_data(variant: &TetriminoVariant) -> HashMap<i32, [Vec3; 4]> {
+pub fn tetrimino_cell_data(variant: &TetriminoVariant) -> [[Vec3; 4]; 4] {
     match variant {
-        TetriminoVariant::I => TETRINIMO_I_CELLS.clone(),
+        TetriminoVariant::I => TETRIMINO_I_CELLS,
     }
 }
 
 #[derive(Component)]
 pub struct TetriminoSquare {
     child_id: usize,
-    rotation: i32,
-    cells: HashMap<i32, [Vec3; 4]>,
+    rotation: usize,
+    cells: [[Vec3; 4]; 4],
 }
 impl TetriminoSquare {
-    pub fn new(child_id: usize, cells: HashMap<i32, [Vec3; 4]>) -> Self {
+    pub fn new(child_id: usize, cells: [[Vec3; 4]; 4]) -> Self {
         Self {
             child_id,
             rotation: 0,
@@ -41,10 +39,10 @@ impl TetriminoSquare {
             self.rotation += 1;
         } else {
             self.rotation = 0;
-        };
+        }
     }
     pub fn get_rotation(&self) -> Transform {
-        Transform::from_translation(self.cells[&self.rotation][self.child_id] * CELL_SIZE)
+        Transform::from_translation(self.cells[self.rotation][self.child_id] * CELL_SIZE)
             .with_scale(Vec3::splat(CELL_SIZE - CELL_BORDER_THICKNESS))
     }
 }
@@ -62,16 +60,16 @@ impl TetriminoSquareBundle {
         variant: &TetriminoVariant,
         cell_mesh: &Handle<Mesh>,
         cell_color: &Handle<ColorMaterial>,
-        rotation: i32,
+        rotation: usize,
         child_id: usize,
     ) -> Self {
         let cells = tetrimino_cell_data(variant);
-        let tetrimino_square = TetriminoSquare::new(child_id, cells.clone());
+        let tetrimino_square = TetriminoSquare::new(child_id, cells);
         Self {
             tetrimino_square,
             cell_mesh: Mesh2d(cell_mesh.clone()),
             cell_color: MeshMaterial2d(cell_color.clone()),
-            transform: Transform::from_translation(cells[&rotation][child_id] * CELL_SIZE)
+            transform: Transform::from_translation(cells[rotation][child_id] * CELL_SIZE)
                 .with_scale(Vec3::splat(CELL_SIZE - CELL_BORDER_THICKNESS)),
         }
     }

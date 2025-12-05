@@ -4,7 +4,6 @@ use bevy::window::PrimaryWindow;
 use rand::Rng;
 
 use crate::board::grid::spawn_grid;
-use crate::board::tetrimino::{tetrimino, Tetrimino};
 use crate::board::tetrimino_square::TetriminoVariant;
 use crate::plugins::assets_plugin::GameAssets;
 
@@ -26,7 +25,7 @@ pub fn game_setup(
     let cell_mesh: &Handle<Mesh> = &tetrimino_assets.cell_mesh;
 
     let background_material: &Handle<ColorMaterial> = &tetrimino_assets.background_material;
-    let tetrimino_cell_color: &Handle<ColorMaterial> = &tetrimino_assets.tetrimino_i_material;
+
     let x_offset: f32 = -window.width() / 2.;
     let y_offset: f32 = window.height() / 2.;
     // Spawn camera
@@ -42,14 +41,24 @@ pub fn game_setup(
         TetriminoVariant::J,
         TetriminoVariant::L,
     ];
+    let tetrimino_colors: &[&Handle<ColorMaterial>] = &[
+        &tetrimino_assets.tetrimino_i_material,
+        &tetrimino_assets.tetrimino_o_material,
+        &tetrimino_assets.tetrimino_t_material,
+        &tetrimino_assets.tetrimino_s_material,
+        &tetrimino_assets.tetrimino_z_material,
+        &tetrimino_assets.tetrimino_j_material,
+        &tetrimino_assets.tetrimino_l_material,
+    ];
     let rng_idx: usize = rng.random_range(0..=6);
     let rng_tetrimino_variant: &TetriminoVariant = &tetrimino_variants[rng_idx];
+    let tetrimino_color: &Handle<ColorMaterial> = tetrimino_colors[rng_idx];
     spawn_grid(
         &mut commands,
         cell_mesh,
         background_material,
         rng_tetrimino_variant,
-        tetrimino_cell_color,
+        tetrimino_color,
         x_offset,
         y_offset,
     );

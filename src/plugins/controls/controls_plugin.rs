@@ -1,7 +1,8 @@
 #![allow(clippy::needless_pass_by_value)]
 use crate::{
     board::{tetrimino::Tetrimino, tetrimino_square::TetriminoSquare},
-    config::grid::grid_config::{CELL_SIZE, COLUMN_AMOUNT},
+    config::grid::grid_config::CELL_SIZE,
+    plugins::controls::boundary_checks::{corrected_translation, corrected_translation_rotation},
 };
 use bevy::prelude::*;
 pub struct ControlsPlugin;
@@ -19,7 +20,10 @@ pub fn handle_movement(
     children_of: Query<&Children>,
     squares: Query<&Transform, (With<TetriminoSquare>, Without<Tetrimino>)>,
 ) {
-    if !keyboard_input.just_pressed(KeyCode::KeyA) && !keyboard_input.just_pressed(KeyCode::KeyD) {
+    if !keyboard_input.just_pressed(KeyCode::KeyA)
+        && !keyboard_input.just_pressed(KeyCode::KeyD)
+        && !keyboard_input.just_pressed(KeyCode::KeyS)
+    {
         return;
     }
     let (tetrimino_entity, mut tetrimino_transform) = tetrimino_query.into_inner();
@@ -40,6 +44,11 @@ pub fn handle_movement(
 
     if keyboard_input.just_pressed(KeyCode::KeyD) {
         let movement = Vec3::new(CELL_SIZE, 0., 0.);
+        tetrimino_transform.translation =
+            corrected_translation(tetrimino_transform.translation, &child_positions, &movement);
+    }
+    if keyboard_input.just_pressed(KeyCode::KeyS) {
+        let movement = Vec3::new(0., -CELL_SIZE, 0.);
         tetrimino_transform.translation =
             corrected_translation(tetrimino_transform.translation, &child_positions, &movement);
     }
@@ -82,56 +91,4 @@ pub fn handle_rotation(
         &movement_vectors,
     );
     println!("After: {}", tetrimino_transform.translation);
-}
-
-fn corrected_translation(
-    tetrimino_position: Vec3,
-    children_positions: &[Vec3],
-    movement_vector: &Vec3,
-) -> Vec3 {
-    let mut new_position: Vec3 = tetrimino_position + movement_vector;
-    for child_position in children_positions {
-        let adjusted_position = child_position + new_position;
-        new_position.x += left_border_correction(adjusted_position.x);
-        new_position.x += right_border_correction(adjusted_position.x);
-    }
-
-    new_position
-}
-
-fn corrected_translation_rotation(
-    tetrimino_position: Vec3,
-    children_positions: &[Vec3],
-    movement_vectors: &[Vec3],
-) -> Vec3 {
-    let mut new_position: Vec3 = tetrimino_position;
-
-    for (i, &movement_vector) in movement_vectors.iter().enumerate() {
-        let child_position = children_positions[i];
-        let adjusted_position = new_position + child_position + movement_vector;
-
-        new_position.x += left_border_correction(adjusted_position.x);
-        new_position.x += right_border_correction(adjusted_position.x);
-    }
-
-    new_position
-}
-
-fn left_border_correction(x: f32) -> f32 {
-    if x < -CELL_SIZE {
-        return 2. * CELL_SIZE;
-    }
-    if x < 0. {
-        return CELL_SIZE;
-    }
-    0.
-}
-fn right_border_correction(x: f32) -> f32 {
-    if x > CELL_SIZE * COLUMN_AMOUNT {
-        return -2. * CELL_SIZE;
-    }
-    if x > CELL_SIZE * (COLUMN_AMOUNT - 1.) {
-        return -CELL_SIZE;
-    }
-    0.
 }

@@ -7,7 +7,8 @@ mod config;
 mod plugins;
 
 use crate::plugins::{
-    assets_plugin::AssetsPlugin, controls_plugin::ControlsPlugin, startup_plugin::StartupPlugin,
+    assets_plugin::AssetsPlugin, controls::controls_plugin::ControlsPlugin,
+    startup_plugin::StartupPlugin,
 };
 
 fn main() {

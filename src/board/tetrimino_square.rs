@@ -9,15 +9,16 @@ use crate::config::{
         tetrimino_z_cells::TETRIMINO_Z_CELLS,
     },
 };
-
+#[repr(usize)]
+#[derive(Copy, Clone, Debug)]
 pub enum TetriminoVariant {
-    I,
-    O,
-    T,
-    S,
-    Z,
-    J,
-    L,
+    I = 0,
+    O = 1,
+    T = 2,
+    S = 3,
+    Z = 4,
+    J = 5,
+    L = 6,
 }
 pub fn tetrimino_cell_data(variant: &TetriminoVariant) -> [[Vec3; 4]; 4] {
     match variant {

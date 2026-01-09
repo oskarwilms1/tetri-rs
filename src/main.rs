@@ -8,7 +8,7 @@ mod plugins;
 
 use crate::plugins::{
     assets_plugin::AssetsPlugin, controls::controls_plugin::ControlsPlugin,
-    startup_plugin::StartupPlugin,
+    observers_plugin::ObserversPlugin, sandbox::SandboxPlugin, startup_plugin::StartupPlugin,
 };
 
 fn main() {
@@ -30,7 +30,9 @@ fn main() {
         }))
         //.insert_resource(ClearColor(Color::srgb(0., 0., 0.)))
         .add_plugins(AssetsPlugin)
+        .add_plugins(ObserversPlugin)
         .add_plugins(StartupPlugin)
         .add_plugins(ControlsPlugin)
+        //.add_plugins(SandboxPlugin);
         .run();
 }

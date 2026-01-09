@@ -34,11 +34,9 @@ pub fn spawn_grid(
     commands: &mut Commands,
     cell_mesh: &Handle<Mesh>,
     background_cell_material: &Handle<ColorMaterial>,
-    tetrimino_variant: &TetriminoVariant,
-    tetrinimo_i_material: &Handle<ColorMaterial>,
     x_offset: f32,
     y_offset: f32,
-) {
+) -> Entity {
     let parent = commands
         .spawn((
             Grid,
@@ -52,14 +50,5 @@ pub fn spawn_grid(
             parent.spawn(child);
         });
     }
-    let tetrimino = commands
-        .spawn(tetrimino(
-            tetrimino_variant,
-            cell_mesh,
-            tetrinimo_i_material,
-            3. * CELL_SIZE,
-            0.,
-        ))
-        .id();
-    commands.entity(parent).add_child(tetrimino);
+    parent
 }

@@ -3,48 +3,59 @@ use bevy::color::palettes::tailwind::{
 };
 use bevy::prelude::*;
 
-#[derive(Resource, Default)]
-pub struct GameAssets {
+use crate::board::tetrimino_square::TetriminoVariant;
+
+#[derive(Resource)]
+pub struct BackgroundAssets {
     pub cell_mesh: Handle<Mesh>,
     pub background_material: Handle<ColorMaterial>,
-    pub tetrimino_i_material: Handle<ColorMaterial>,
-    pub tetrimino_o_material: Handle<ColorMaterial>,
-    pub tetrimino_t_material: Handle<ColorMaterial>,
-    pub tetrimino_s_material: Handle<ColorMaterial>,
-    pub tetrimino_z_material: Handle<ColorMaterial>,
-    pub tetrimino_j_material: Handle<ColorMaterial>,
-    pub tetrimino_l_material: Handle<ColorMaterial>,
 }
 
-pub struct AssetsPlugin;
+#[derive(Resource)]
+pub struct TetriminoAssets {
+    pub cell_mesh: Handle<Mesh>,
+    pub materials: [Handle<ColorMaterial>; 7],
+}
 
-impl Plugin for AssetsPlugin {
-    fn build(&self, app: &mut App) {
-        app.insert_resource(GameAssets::default())
-            .add_systems(Startup, load_assets);
+impl TetriminoAssets {
+    #[inline]
+    pub fn material(&self, variant: TetriminoVariant) -> Handle<ColorMaterial> {
+        self.materials[variant as usize].clone()
     }
 }
 
-pub fn load_assets(
+pub struct AssetsPlugin;
+#[derive(Debug, Hash, PartialEq, Eq, Clone, SystemSet)]
+pub struct AssetLoading;
+
+impl Plugin for AssetsPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Startup, load_assets.in_set(AssetLoading));
+    }
+}
+
+fn load_assets(
+    mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
-    mut tetrimino_assets: ResMut<GameAssets>,
 ) {
-    tetrimino_assets.cell_mesh = meshes.add(Rectangle::default());
-    tetrimino_assets.background_material = materials.add(ColorMaterial::default());
+    let cell_mesh = meshes.add(Rectangle::default());
 
-    tetrimino_assets.tetrimino_i_material =
-        materials.add(ColorMaterial::from_color(Color::from(CYAN_500)));
-    tetrimino_assets.tetrimino_o_material =
-        materials.add(ColorMaterial::from_color(Color::from(YELLOW_500)));
-    tetrimino_assets.tetrimino_t_material =
-        materials.add(ColorMaterial::from_color(Color::from(PURPLE_500)));
-    tetrimino_assets.tetrimino_s_material =
-        materials.add(ColorMaterial::from_color(Color::from(GREEN_500)));
-    tetrimino_assets.tetrimino_z_material =
-        materials.add(ColorMaterial::from_color(Color::from(RED_500)));
-    tetrimino_assets.tetrimino_j_material =
-        materials.add(ColorMaterial::from_color(Color::from(BLUE_500)));
-    tetrimino_assets.tetrimino_l_material =
-        materials.add(ColorMaterial::from_color(Color::from(ORANGE_500)));
+    commands.insert_resource(BackgroundAssets {
+        cell_mesh: cell_mesh.clone(),
+        background_material: materials.add(ColorMaterial::default()),
+    });
+
+    commands.insert_resource(TetriminoAssets {
+        cell_mesh,
+        materials: [
+            materials.add(ColorMaterial::from_color(CYAN_500)),
+            materials.add(ColorMaterial::from_color(YELLOW_500)),
+            materials.add(ColorMaterial::from_color(PURPLE_500)),
+            materials.add(ColorMaterial::from_color(GREEN_500)),
+            materials.add(ColorMaterial::from_color(RED_500)),
+            materials.add(ColorMaterial::from_color(BLUE_500)),
+            materials.add(ColorMaterial::from_color(ORANGE_500)),
+        ],
+    });
 }

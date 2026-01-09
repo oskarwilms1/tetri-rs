@@ -1,6 +1,10 @@
 use crate::board::tetrimino_square::spawn_tetrinimo_children;
 use crate::board::tetrimino_square::TetriminoVariant;
+use crate::config::grid::grid_config::CELL_SIZE;
+use crate::config::tetrimino::variants::VARIANTS;
+use crate::plugins::assets_plugin::TetriminoAssets;
 use bevy::prelude::*;
+use rand::Rng;
 
 #[derive(Component)]
 pub struct Tetrimino;
@@ -28,6 +32,21 @@ impl TetriminoBundle {
             inherited_visibility: InheritedVisibility::default(),
         }
     }
+}
+
+pub fn spawn_tetrimino(
+    commands: &mut Commands,
+    parent: Entity,
+    tetrimino_assets: &ResMut<TetriminoAssets>,
+) {
+    let mut rng = rand::rng();
+    let variant: &TetriminoVariant = &VARIANTS[rng.random_range(0..=6)];
+    let mesh = &tetrimino_assets.cell_mesh;
+    let material = &tetrimino_assets.material(*variant);
+    let tetrimino = commands
+        .spawn(tetrimino(variant, mesh, material, 3. * CELL_SIZE, 0.))
+        .id();
+    commands.entity(parent).add_child(tetrimino);
 }
 
 pub fn tetrimino(

@@ -1,7 +1,7 @@
 #![allow(clippy::needless_pass_by_value)]
 use bevy::{
     app::App,
-    ecs::{event::Event, observer::On},
+    ecs::{entity::Entity, event::EntityEvent, observer::On},
     prelude::Plugin,
 };
 
@@ -12,9 +12,7 @@ impl Plugin for ObserversPlugin {
         app.add_observer(observer);
     }
 }
-#[derive(Event)]
-pub struct TetriminoPlaced;
+#[derive(EntityEvent)]
+pub struct TetriminoPlaced(Entity);
 
-fn observer(_event: On<TetriminoPlaced>) {
-    println!("Tetrimino collides!");
-}
+fn observer(_event: On<TetriminoPlaced>) {}

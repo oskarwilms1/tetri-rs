@@ -5,18 +5,13 @@ use crate::{
 };
 use bevy::prelude::*;
 
-pub fn handle_rotation(
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-    tetrimino_query: Single<(Entity, &mut Transform), With<Tetrimino>>,
+pub fn handle_rotate(
+    query: Single<(Entity, &mut Transform), With<Tetrimino>>,
     children_of: Query<&Children>,
     mut squares: Query<(&mut TetriminoSquare, &mut Transform), Without<Tetrimino>>,
 ) {
-    if !keyboard_input.just_pressed(KeyCode::KeyW) {
-        return;
-    }
-
-    let (tetrimino_entity, mut tetrimino_transform) = tetrimino_query.into_inner();
-    let children = children_of.get(tetrimino_entity).unwrap();
+    let (entity, mut transform) = query.into_inner();
+    let children = children_of.get(entity).unwrap();
 
     let child_positions: Vec<Vec3> = children
         .iter()
@@ -35,11 +30,6 @@ pub fn handle_rotation(
             movement_vectors.push(movement_vector);
         }
     }
-    println!("Before: {}", tetrimino_transform.translation);
-    tetrimino_transform.translation = corrected_translation_rotation(
-        tetrimino_transform.translation,
-        &child_positions,
-        &movement_vectors,
-    );
-    println!("After: {}", tetrimino_transform.translation);
+    transform.translation =
+        corrected_translation_rotation(transform.translation, &child_positions, &movement_vectors);
 }

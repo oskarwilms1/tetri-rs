@@ -8,15 +8,9 @@ use rand::Rng;
 
 #[derive(Component)]
 pub struct Tetrimino;
-#[derive(Component)]
-pub enum IsActive {
-    Yes,
-    //No,
-}
 #[derive(Bundle)]
 pub struct TetriminoBundle {
     tetrimino: Tetrimino,
-    is_active: IsActive,
     transform: Transform,
     visibility: Visibility,
     inherited_visibility: InheritedVisibility,
@@ -26,7 +20,6 @@ impl TetriminoBundle {
     pub fn new(x: f32, y: f32) -> Self {
         Self {
             tetrimino: Tetrimino,
-            is_active: IsActive::Yes,
             transform: Transform::from_xyz(x, y, 1.),
             visibility: Visibility::default(),
             inherited_visibility: InheritedVisibility::default(),

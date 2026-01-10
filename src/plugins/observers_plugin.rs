@@ -2,7 +2,15 @@
 use bevy::{
     app::App,
     ecs::{entity::Entity, event::EntityEvent, observer::On},
-    prelude::Plugin,
+    prelude::*,
+};
+
+use crate::{
+    board::{
+        grid::Grid,
+        tetrimino::{spawn_tetrimino, Tetrimino},
+    },
+    plugins::assets_plugin::TetriminoAssets,
 };
 
 pub struct ObserversPlugin;
@@ -12,7 +20,20 @@ impl Plugin for ObserversPlugin {
         app.add_observer(observer);
     }
 }
-#[derive(EntityEvent)]
-pub struct TetriminoPlaced(Entity);
 
-fn observer(_event: On<TetriminoPlaced>) {}
+#[derive(EntityEvent)]
+pub struct TetriminoPlaced(pub Entity);
+
+fn observer(
+    event: On<TetriminoPlaced>,
+    mut commands: Commands,
+    parent_query: Query<Entity, With<Grid>>,
+    tetrimino_assets: ResMut<TetriminoAssets>,
+) {
+    let entity = event.0;
+    let parent = parent_query.single().expect("Didn't find the Grid");
+
+    commands.entity(entity).remove::<Tetrimino>();
+
+    spawn_tetrimino(&mut commands, parent, &tetrimino_assets);
+}

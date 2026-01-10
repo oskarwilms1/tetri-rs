@@ -31,9 +31,7 @@ pub fn handle_move(
 
     let new_position =
         corrected_translation(transform.translation, &child_positions, &movement_vec);
+
     transform.translation = new_position;
-    if check_collision(new_position, &child_positions) {
-        //commands.trigger(TetriminoPlaced);
-        todo!();
-    }
+    check_collision(commands, entity, new_position, &child_positions);
 }

@@ -8,7 +8,7 @@ mod plugins;
 
 use crate::plugins::{
     assets_plugin::AssetsPlugin, controls::controls_plugin::ControlsPlugin,
-    gravity_plugin::GravityPlugin, observers_plugin::ObserversPlugin, sandbox::SandboxPlugin,
+    gravity_plugin::GravityPlugin, observers_plugin::ObserversPlugin,
     startup_plugin::StartupPlugin,
 };
 

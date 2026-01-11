@@ -17,7 +17,7 @@ pub fn handle_move(
     commands: &mut Commands,
     tetrimino_query: Single<(Entity, &mut Transform), With<Tetrimino>>,
     children_of: Query<&Children>,
-    squares: Query<(&TetriminoSquare, &Transform), Without<Tetrimino>>,
+    squares: Query<(&mut TetriminoSquare, &mut Transform), Without<Tetrimino>>,
     movement: Movement,
     grid_matrix: Query<&GridMatrix>,
 ) {

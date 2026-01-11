@@ -1,4 +1,5 @@
 #![allow(clippy::needless_pass_by_value)]
+
 use bevy::{
     app::App,
     ecs::{entity::Entity, event::Event, observer::On},
@@ -12,6 +13,7 @@ use crate::{
         tetrimino::{spawn_tetrimino, Tetrimino},
         tetrimino_square::TetriminoSquare,
     },
+    config::grid::grid_config::{CELL_SIZE, ROW_AMOUNT},
     plugins::assets_plugin::TetriminoAssets,
 };
 
@@ -41,8 +43,12 @@ fn observer(
 
     let matrix = &mut matrix_query.single_mut().expect("Matrix not found");
     let parent = parent_query.single().expect("Didn't find the Grid");
+
     commands.entity(tetrimino).remove::<Tetrimino>();
+
     matrix.place_tetrimino(tetrimino_position.translation, children, squares_query);
+    let empty_rows = matrix.check_full_rows();
+    matrix.empty_rows(empty_rows.clone());
+    //clear_rows(empty_rows, &mut commands, squares_query);
     spawn_tetrimino(&mut commands, parent, &tetrimino_assets);
-    info!("{:?}", matrix_query.single().unwrap());
 }

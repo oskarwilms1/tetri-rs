@@ -5,7 +5,10 @@ use bevy::{
     transform::components::Transform,
 };
 
-use crate::{board::tetrimino_square::TetriminoSquare, config::grid::grid_config::CELL_SIZE};
+use crate::{
+    board::tetrimino_square::TetriminoSquare,
+    config::grid::grid_config::{CELL_SIZE, COLUMN_AMOUNT, ROW_AMOUNT},
+};
 
 #[derive(Component, Debug)]
 pub struct GridMatrix {
@@ -64,5 +67,47 @@ impl GridMatrix {
                 self.fill_cell(x_index, y_index);
             }
         }
+    }
+    pub fn empty_rows(&mut self, rows: Option<Vec<usize>>) {
+        if let Some(mut full_rows) = rows {
+            full_rows.sort_unstable_by(|a, b| b.cmp(a));
+
+            for &y in &full_rows {
+                for x in 0..self.width {
+                    if let Some(index) = self.index(x, y) {
+                        self.cells[index] = Cell::Empty;
+                    }
+                }
+
+                for above_y in (0..y).rev() {
+                    for x in 0..self.width {
+                        let from_index = self.index(x, above_y).unwrap();
+                        let to_index = self.index(x, above_y + 1).unwrap();
+                        self.cells[to_index] = self.cells[from_index].clone();
+                    }
+                }
+
+                for x in 0..self.width {
+                    let top_index = self.index(x, 0).unwrap();
+                    self.cells[top_index] = Cell::Empty;
+                }
+            }
+        }
+    }
+    pub fn check_full_rows(&self) -> Option<Vec<usize>> {
+        let mut full_rows: Vec<usize> = Vec::new();
+        for y in 0..ROW_AMOUNT as usize {
+            if self.cells[self.index(0, y).unwrap()
+                ..=self.index(COLUMN_AMOUNT as usize - 1_usize, y).unwrap()]
+                .iter()
+                .all(|cell| *cell == Cell::Full)
+            {
+                full_rows.push(y);
+            }
+        }
+        if !full_rows.is_empty() {
+            return Some(full_rows);
+        }
+        None
     }
 }

@@ -34,7 +34,7 @@ pub fn tetrimino_cell_data(variant: &TetriminoVariant) -> [[Vec3; 4]; 4] {
 
 #[derive(Component)]
 pub struct TetriminoSquare {
-    child_id: usize,
+    pub child_id: usize,
     rotation: usize,
     next_rotation: usize,
     cells: [[Vec3; 4]; 4],

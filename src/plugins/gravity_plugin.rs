@@ -13,7 +13,7 @@ use bevy::{
 };
 
 use crate::{
-    board::{tetrimino::Tetrimino, tetrimino_square::TetriminoSquare},
+    board::{grid_matrix::GridMatrix, tetrimino::Tetrimino, tetrimino_square::TetriminoSquare},
     plugins::controls::{handle_input::Movement, handle_movement::handle_move},
 };
 
@@ -36,6 +36,7 @@ fn gravity(
     tetrimino_query: Single<(Entity, &mut Transform), With<Tetrimino>>,
     children_of: Query<&Children>,
     squares: Query<(&mut TetriminoSquare, &mut Transform), Without<Tetrimino>>,
+    grid_matrix: Query<&GridMatrix>,
 ) {
     timer.0.tick(time.delta());
 
@@ -46,6 +47,7 @@ fn gravity(
             children_of,
             squares,
             Movement::Down,
+            grid_matrix,
         );
     }
 }

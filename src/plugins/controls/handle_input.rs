@@ -11,7 +11,7 @@ use bevy::{
 };
 
 use crate::{
-    board::{tetrimino::Tetrimino, tetrimino_square::TetriminoSquare},
+    board::{grid_matrix::GridMatrix, tetrimino::Tetrimino, tetrimino_square::TetriminoSquare},
     plugins::controls::{handle_movement::handle_move, handle_rotation::handle_rotate},
 };
 
@@ -26,6 +26,7 @@ pub fn handle_input(
     tetrimino_query: Single<(Entity, &mut Transform), With<Tetrimino>>,
     children_of: Query<&Children>,
     squares: Query<(&mut TetriminoSquare, &mut Transform), Without<Tetrimino>>,
+    grid_matrix: Query<&GridMatrix>,
     input: Res<ButtonInput<KeyCode>>,
 ) {
     let mut movement: Option<Movement> = None;
@@ -33,7 +34,7 @@ pub fn handle_input(
     if let Some(key) = input.get_just_pressed().next() {
         match key {
             KeyCode::KeyW => {
-                handle_rotate(tetrimino_query, children_of, squares);
+                handle_rotate(grid_matrix, tetrimino_query, children_of, squares);
                 return;
             }
             KeyCode::KeyA => movement = Some(Movement::Left),
@@ -50,6 +51,7 @@ pub fn handle_input(
             children_of,
             squares,
             movement,
+            grid_matrix,
         );
     }
 }

@@ -36,6 +36,7 @@ pub fn tetrimino_cell_data(variant: &TetriminoVariant) -> [[Vec3; 4]; 4] {
 pub struct TetriminoSquare {
     child_id: usize,
     rotation: usize,
+    next_rotation: usize,
     cells: [[Vec3; 4]; 4],
 }
 impl TetriminoSquare {
@@ -43,6 +44,7 @@ impl TetriminoSquare {
         Self {
             child_id,
             rotation: 0,
+            next_rotation: 1,
             cells,
         }
     }
@@ -52,9 +54,18 @@ impl TetriminoSquare {
         } else {
             self.rotation = 0;
         }
+        if self.next_rotation < 3 {
+            self.next_rotation += 1;
+        } else {
+            self.next_rotation = 0;
+        }
     }
     pub fn get_rotation(&self) -> Transform {
         Transform::from_translation(self.cells[self.rotation][self.child_id] * CELL_SIZE)
+            .with_scale(Vec3::splat(CELL_SIZE - CELL_BORDER_THICKNESS))
+    }
+    pub fn get_next_rotation(&self) -> Transform {
+        Transform::from_translation(self.cells[self.next_rotation][self.child_id] * CELL_SIZE)
             .with_scale(Vec3::splat(CELL_SIZE - CELL_BORDER_THICKNESS))
     }
 }

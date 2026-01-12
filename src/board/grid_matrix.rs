@@ -13,7 +13,7 @@ use bevy::{
     sprite_render::{ColorMaterial, MeshMaterial2d},
     transform::components::Transform,
 };
-use rand::seq::index;
+
 
 use crate::{
     board::tetrimino_square::TetriminoSquare,
@@ -110,9 +110,7 @@ impl GridMatrix {
             self.cells[index] = Cell::new(CellState::Empty, self.color.clone());
         }
     }
-    pub fn get_cells(&self) -> &[Cell] {
-        &self.cells
-    }
+
     pub fn move_down_cell(&mut self, x: usize, y: usize) {
         if let Some((higher_index, lower_index)) = self.index(x, y).zip(self.index(x, y + 1)) {
             self.cells.swap(higher_index, lower_index);

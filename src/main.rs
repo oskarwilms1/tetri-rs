@@ -1,3 +1,4 @@
+#![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
 use bevy::prelude::*;
 mod board;
 mod config;
@@ -15,11 +16,11 @@ fn main() {
             primary_window: Some(Window {
                 title: "Tetri-rs".into(),
                 name: Some("Tetri-rs".into()),
-                resolution: (300, 600).into(),
+                resolution: (450, 900).into(),
                 fit_canvas_to_parent: true,
                 prevent_default_event_handling: false,
                 enabled_buttons: bevy::window::EnabledButtons {
-                    maximize: false,
+                    maximize: true,
                     ..Default::default()
                 },
                 ..default()

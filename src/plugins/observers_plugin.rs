@@ -73,7 +73,6 @@ fn handle_full_rows(
 ) {
     let full_rows = matrix.check_full_rows();
     matrix.empty_rows(full_rows);
-    dbg!(matrix.get_cells());
     for child in matrix_children.iter() {
         commands.entity(child).despawn();
     }

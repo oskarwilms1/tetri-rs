@@ -33,7 +33,7 @@ pub fn game_setup(
     let grid_width = COLUMN_AMOUNT as f32 * CELL_SIZE;
     let grid_height = -ROW_AMOUNT as f32 * CELL_SIZE;
 
-    let x_offset = -grid_width / 2.0;
+    let x_offset = -grid_width / 2.0 + CELL_SIZE/2.0;
     let y_offset = -grid_height / 2.0;
 
     let grid = spawn_grid(

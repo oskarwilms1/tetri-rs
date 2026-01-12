@@ -17,10 +17,10 @@ fn main() {
                 title: "Tetri-rs".into(),
                 name: Some("Tetri-rs".into()),
                 resolution: (450, 900).into(),
-                fit_canvas_to_parent: true,
+                resizable: false,
                 prevent_default_event_handling: false,
                 enabled_buttons: bevy::window::EnabledButtons {
-                    maximize: true,
+                    maximize: false,
                     ..Default::default()
                 },
                 ..default()

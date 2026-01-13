@@ -4,11 +4,10 @@ use crate::{
     config::grid::grid_config::CELL_SIZE,
     plugins::{
         controls::{
-            boundary_checks::corrected_translation,
-            collision::{check_collision, check_tetrimino_collision},
+            boundary_checks::corrected_translation, collision::check_tetrimino_collision,
             handle_input::Movement,
         },
-        observers_plugin::TetriminoPlaced,
+        observers::handle_on_placed::TetriminoPlaced,
     },
 };
 use bevy::prelude::*;
@@ -59,5 +58,4 @@ pub fn handle_move(
         corrected_translation(transform.translation, &child_positions, &movement_vec);
 
     transform.translation = new_position;
-    check_collision(commands, new_position, &child_positions);
 }

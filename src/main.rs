@@ -2,6 +2,7 @@
 use bevy::{prelude::*, window::WindowResolution};
 mod board;
 mod config;
+mod game;
 mod plugins;
 mod scoreboard;
 

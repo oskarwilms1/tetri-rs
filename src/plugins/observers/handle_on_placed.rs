@@ -11,6 +11,7 @@ use crate::{
         tetrimino_square::TetriminoSquare,
     },
     plugins::assets_plugin::TetriminoAssets,
+    scoreboard::scoreboard::{increment_score, Score, Scoreboard},
 };
 #[derive(Event)]
 pub struct TetriminoPlaced;
@@ -26,11 +27,12 @@ pub fn handle_on_placed(
         With<TetriminoSquare>,
     >,
     tetrimino_assets: ResMut<TetriminoAssets>,
+    scoreboard_query: Query<(&mut Score, &mut Text2d), With<Scoreboard>>,
 ) {
     let (tetrimino, tetrimino_position, tetrimino_children) =
         child_query.single().expect("No tetrimino active");
 
-    update_matrix(
+    let points = update_matrix(
         &mut commands,
         matrix_query,
         tetrimino_position.translation,
@@ -38,21 +40,7 @@ pub fn handle_on_placed(
         squares_query,
     );
     handle_respawn(commands, tetrimino, parent_query, &tetrimino_assets);
-}
-
-fn handle_full_rows(
-    commands: &mut Commands,
-    matrix_entity: Entity,
-    matrix: &mut GridMatrix,
-    matrix_children: &Children,
-) {
-    let full_rows = matrix.check_full_rows();
-    matrix.empty_rows(full_rows);
-    for child in matrix_children.iter() {
-        commands.entity(child).despawn();
-    }
-
-    matrix.spawn_cells(commands, matrix_entity, 0.0);
+    increment_score(scoreboard_query, points);
 }
 
 fn handle_respawn(
@@ -63,7 +51,7 @@ fn handle_respawn(
 ) {
     let parent = parent_query.single().expect("Grid not found");
     commands.entity(entity).despawn();
-    spawn_tetrimino(&mut commands, parent, &tetrimino_assets);
+    spawn_tetrimino(&mut commands, parent, tetrimino_assets);
 }
 fn update_matrix(
     commands: &mut Commands,
@@ -74,16 +62,17 @@ fn update_matrix(
         (Entity, &MeshMaterial2d<ColorMaterial>, &Transform),
         With<TetriminoSquare>,
     >,
-) {
+) -> u64 {
     let (matrix_entity, matrix_children, mut matrix) =
         matrix_query.single_mut().expect("GridMatrix not found");
 
     matrix.place_tetrimino(tetrimino_position, tetrimino_children, squares_query);
     let full_rows = matrix.check_full_rows();
-    matrix.empty_rows(full_rows);
+    let amount_emptied: u64 = matrix.empty_rows(full_rows);
     for child in matrix_children.iter() {
         commands.entity(child).despawn();
     }
 
     matrix.spawn_cells(commands, matrix_entity, 0.0);
+    amount_emptied
 }

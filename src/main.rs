@@ -1,8 +1,9 @@
 #![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
-use bevy::prelude::*;
+use bevy::{prelude::*, window::WindowResolution};
 mod board;
 mod config;
 mod plugins;
+mod scoreboard;
 
 use crate::plugins::{
     assets_plugin::AssetsPlugin, controls::controls_plugin::ControlsPlugin,
@@ -16,7 +17,7 @@ fn main() {
             primary_window: Some(Window {
                 title: "Tetri-rs".into(),
                 name: Some("Tetri-rs".into()),
-                resolution: (450, 900).into(),
+                resolution: WindowResolution::new(450, 900).with_scale_factor_override(1.0),
                 resizable: false,
                 prevent_default_event_handling: false,
                 enabled_buttons: bevy::window::EnabledButtons {

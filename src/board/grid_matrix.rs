@@ -14,7 +14,6 @@ use bevy::{
     transform::components::Transform,
 };
 
-
 use crate::{
     board::tetrimino_square::TetriminoSquare,
     config::grid::grid_config::{CELL_BORDER_THICKNESS, CELL_SIZE, COLUMN_AMOUNT, ROW_AMOUNT},
@@ -136,11 +135,12 @@ impl GridMatrix {
         }
     }
 
-    pub fn empty_rows(&mut self, rows: Option<Vec<usize>>) {
+    pub fn empty_rows(&mut self, rows: Option<Vec<usize>>) -> u64 {
+        let mut counter: u64 = 0;
         if let Some(mut full_rows) = rows {
             full_rows.sort_unstable();
-
             for y_index in full_rows {
+                counter += 1;
                 for x in 0..self.width {
                     self.empty_cell(x, y_index);
                 }
@@ -151,6 +151,7 @@ impl GridMatrix {
                 }
             }
         }
+        counter
     }
 
     pub fn check_full_rows(&self) -> Option<Vec<usize>> {

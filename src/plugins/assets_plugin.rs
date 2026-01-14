@@ -6,6 +6,11 @@ use bevy::prelude::*;
 use crate::board::tetrimino_square::TetriminoVariant;
 
 #[derive(Resource)]
+pub struct UiFont {
+    pub font: Handle<Font>,
+}
+
+#[derive(Resource)]
 pub struct BackgroundAssets {
     pub cell_mesh: Handle<Mesh>,
     pub background_material: Handle<ColorMaterial>,
@@ -38,6 +43,7 @@ fn load_assets(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
+    asset_server: ResMut<AssetServer>,
 ) {
     let cell_mesh = meshes.add(Rectangle::default());
 
@@ -58,4 +64,7 @@ fn load_assets(
             materials.add(ColorMaterial::from_color(ORANGE_500)),
         ],
     });
+    let font = asset_server.load("fonts/BoldPixels.ttf");
+
+    commands.insert_resource(UiFont { font });
 }

@@ -134,6 +134,14 @@ impl GridMatrix {
             }
         }
     }
+    pub fn check_if_full(self) -> bool {
+        if let Some(index) = self.index(self.width - 1, 2) {
+            return self.cells[0..=index]
+                .iter()
+                .any(|cell| *cell.get_state() == CellState::Full);
+        }
+        false
+    }
 
     pub fn empty_rows(&mut self, rows: Option<Vec<usize>>) -> u64 {
         let mut counter: u64 = 0;

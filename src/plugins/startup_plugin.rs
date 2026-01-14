@@ -1,8 +1,8 @@
 #![allow(clippy::needless_pass_by_value)]
 use crate::board::tetrimino::spawn_tetrimino;
 use crate::config::grid::grid_config::{CELL_SIZE, COLUMN_AMOUNT, ROW_AMOUNT};
-use crate::game::game_state::{gameover_text, gameover_ui};
-use crate::plugins::assets_plugin::{AssetLoading, BackgroundAssets, TetriminoAssets};
+use crate::game::game_state::{gameover_text, gameover_ui, GameState};
+use crate::plugins::assets_plugin::{AssetLoading, BackgroundAssets, TetriminoAssets, UiFont};
 use crate::scoreboard::scoreboard::ScoreboardBundle;
 use bevy::prelude::*;
 
@@ -15,16 +15,17 @@ impl Plugin for StartupPlugin {
         app.add_systems(Startup, game_setup.after(AssetLoading));
     }
 }
-
+#[derive(Component)]
+pub struct GameEntity;
 pub fn game_setup(
     mut commands: Commands,
     background_assets: Res<BackgroundAssets>,
     tetrimino_assets: ResMut<TetriminoAssets>,
-    asset_server: Res<AssetServer>,
+    ui_font: Res<UiFont>,
 ) {
     // Spawn centered 2D camera
-    let font = asset_server.load("/fonts/BoldPixels.ttf");
-    commands.spawn((Camera2d, Transform::default()));
+    let font = ui_font.font.clone();
+    commands.spawn((Camera2d, Transform::default(), GameEntity));
     let cell_mesh = &background_assets.cell_mesh;
     let background_material = &background_assets.background_material;
 
@@ -35,7 +36,10 @@ pub fn game_setup(
     let x_offset = -grid_width / 2.0 + CELL_SIZE / 2.0;
     let y_offset = -grid_height / 2.0;
 
-    commands.spawn(ScoreboardBundle::new(font.clone(), -grid_height / 1.5));
+    commands.spawn((
+        ScoreboardBundle::new(font.clone(), -grid_height / 1.5),
+        GameEntity,
+    ));
     let grid = spawn_grid(
         &mut commands,
         cell_mesh,
@@ -48,4 +52,19 @@ pub fn game_setup(
     commands.spawn(gameover_ui()).with_children(|parent| {
         parent.spawn(gameover_text(font));
     });
+}
+
+pub fn restart(
+    mut commands: Commands,
+    mut game_state: ResMut<GameState>,
+    query: Query<Entity, With<GameEntity>>,
+    background_assets: Res<BackgroundAssets>,
+    tetrimino_assets: ResMut<TetriminoAssets>,
+    ui_font: Res<UiFont>,
+) {
+    for entity in &query {
+        commands.entity(entity).despawn();
+    }
+    game_setup(commands, background_assets, tetrimino_assets, ui_font);
+    *game_state = GameState::Playing;
 }

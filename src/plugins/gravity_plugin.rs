@@ -6,7 +6,7 @@ use bevy::{
         hierarchy::Children,
         query::{With, Without},
         resource::Resource,
-        system::{Commands, Query, ResMut, Single},
+        system::{Commands, Query, Res, ResMut, Single},
     },
     time::{Time, Timer, TimerMode},
     transform::components::Transform,
@@ -14,6 +14,7 @@ use bevy::{
 
 use crate::{
     board::{grid_matrix::GridMatrix, tetrimino::Tetrimino, tetrimino_square::TetriminoSquare},
+    game::game_state::GameState,
     plugins::controls::{handle_input::Movement, handle_movement::handle_move},
 };
 
@@ -30,6 +31,7 @@ impl Plugin for GravityPlugin {
 struct GravityTimer(Timer);
 
 fn gravity(
+    game_state: Res<GameState>,
     mut timer: ResMut<GravityTimer>,
     time: ResMut<Time>,
     mut commands: Commands,
@@ -38,6 +40,9 @@ fn gravity(
     squares: Query<(&mut TetriminoSquare, &mut Transform), Without<Tetrimino>>,
     grid_matrix: Query<&GridMatrix>,
 ) {
+    if *game_state == GameState::GameOver {
+        return;
+    }
     timer.0.tick(time.delta());
 
     if timer.0.is_finished() {

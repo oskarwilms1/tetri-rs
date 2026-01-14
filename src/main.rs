@@ -6,10 +6,13 @@ mod game;
 mod plugins;
 mod scoreboard;
 
-use crate::plugins::{
-    assets_plugin::AssetsPlugin, controls::controls_plugin::ControlsPlugin,
-    gravity_plugin::GravityPlugin, observers_plugin::ObserversPlugin,
-    startup_plugin::StartupPlugin,
+use crate::{
+    game::game_state::GameState,
+    plugins::{
+        assets_plugin::AssetsPlugin, controls::controls_plugin::ControlsPlugin,
+        gravity_plugin::GravityPlugin, observers_plugin::ObserversPlugin,
+        startup_plugin::StartupPlugin,
+    },
 };
 
 fn main() {
@@ -29,6 +32,7 @@ fn main() {
             }),
             ..default()
         }))
+        .insert_resource(GameState::Playing)
         .add_plugins(AssetsPlugin)
         .add_plugins(ObserversPlugin)
         .add_plugins(StartupPlugin)

@@ -3,6 +3,7 @@ use crate::board::tetrimino_square::TetriminoVariant;
 use crate::config::grid::grid_config::CELL_SIZE;
 use crate::config::tetrimino::variants::VARIANTS;
 use crate::plugins::assets_plugin::TetriminoAssets;
+use crate::plugins::startup_plugin::GameEntity;
 use bevy::prelude::*;
 use rand::Rng;
 
@@ -51,6 +52,7 @@ pub fn tetrimino(
 ) -> impl Bundle {
     (
         TetriminoBundle::new(x, y),
+        GameEntity,
         spawn_tetrinimo_children(variant, cell_mesh, cell_color),
     )
 }

@@ -1,6 +1,7 @@
 use crate::{
     board::grid_matrix::GridMatrix,
     config::grid::grid_config::{COLUMN_AMOUNT, ROW_AMOUNT},
+    plugins::startup_plugin::GameEntity,
 };
 use bevy::prelude::*;
 
@@ -17,6 +18,7 @@ pub fn spawn_grid(
     let grid_entity = commands
         .spawn((
             Grid,
+            GameEntity,
             Transform::from_xyz(x_offset, y_offset, 0.),
             Visibility::default(),
             InheritedVisibility::default(),

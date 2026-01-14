@@ -10,6 +10,7 @@ use crate::{
         tetrimino::{spawn_tetrimino, Tetrimino},
         tetrimino_square::TetriminoSquare,
     },
+    game::game_state::{show_gameover, GameOverUI, GameState},
     plugins::assets_plugin::TetriminoAssets,
     scoreboard::scoreboard::{increment_score, Score, Scoreboard},
 };
@@ -18,6 +19,8 @@ pub struct TetriminoPlaced;
 
 pub fn handle_on_placed(
     _event: On<TetriminoPlaced>,
+    mut game_state: ResMut<GameState>,
+    game_ui_query: Query<&mut Visibility, With<GameOverUI>>,
     mut commands: Commands,
     parent_query: Query<Entity, With<Grid>>,
     matrix_query: Query<(Entity, &Children, &mut GridMatrix), With<GridMatrix>>,
@@ -32,15 +35,22 @@ pub fn handle_on_placed(
     let (tetrimino, tetrimino_position, tetrimino_children) =
         child_query.single().expect("No tetrimino active");
 
-    let points = update_matrix(
+    match update_matrix(
         &mut commands,
         matrix_query,
         tetrimino_position.translation,
         tetrimino_children,
         squares_query,
-    );
-    handle_respawn(commands, tetrimino, parent_query, &tetrimino_assets);
-    increment_score(scoreboard_query, points);
+    ) {
+        Ok(points) => {
+            handle_respawn(commands, tetrimino, parent_query, &tetrimino_assets);
+            increment_score(scoreboard_query, points);
+        }
+        Err(_) => {
+            *game_state = GameState::GameOver;
+            show_gameover(game_ui_query);
+        }
+    }
 }
 
 fn handle_respawn(
@@ -62,7 +72,7 @@ fn update_matrix(
         (Entity, &MeshMaterial2d<ColorMaterial>, &Transform),
         With<TetriminoSquare>,
     >,
-) -> u64 {
+) -> Result<u64, ()> {
     let (matrix_entity, matrix_children, mut matrix) =
         matrix_query.single_mut().expect("GridMatrix not found");
 
@@ -74,5 +84,8 @@ fn update_matrix(
     }
 
     matrix.spawn_cells(commands, matrix_entity, 0.0);
-    amount_emptied
+    if matrix.clone().check_if_full() {
+        return Err(());
+    }
+    Ok(amount_emptied)
 }

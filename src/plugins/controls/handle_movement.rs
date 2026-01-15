@@ -4,7 +4,8 @@ use crate::{
     config::grid::grid_config::CELL_SIZE,
     plugins::{
         controls::{
-            boundary_checks::corrected_translation, collision::check_tetrimino_collision,
+            boundary_checks::corrected_translation,
+            collision::{check_lowest_collision, check_tetrimino_collision},
             handle_input::Movement,
         },
         observers::handle_on_placed::TetriminoPlaced,
@@ -14,13 +15,13 @@ use bevy::prelude::*;
 
 pub fn handle_move(
     commands: &mut Commands,
-    tetrimino_query: Single<(Entity, &mut Transform), With<Tetrimino>>,
+    mut tetrimino_query: Query<(Entity, &mut Transform), With<Tetrimino>>,
     children_of: Query<&Children>,
     squares: Query<(&mut TetriminoSquare, &mut Transform), Without<Tetrimino>>,
     movement: Movement,
     grid_matrix: Query<&GridMatrix>,
 ) {
-    let (entity, mut transform) = tetrimino_query.into_inner();
+    let (entity, mut transform) = tetrimino_query.single_mut().unwrap();
     let children = children_of.get(entity).unwrap();
     let matrix = grid_matrix.single().unwrap();
 
@@ -51,6 +52,13 @@ pub fn handle_move(
             }
 
             Vec3::new(0., -CELL_SIZE, 0.)
+        }
+        Movement::Space => {
+            let new_y_value =
+                check_lowest_collision(matrix, transform.translation, &child_positions);
+            transform.translation.y -= new_y_value;
+            commands.trigger(TetriminoPlaced);
+            return;
         }
     };
 

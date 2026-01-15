@@ -9,11 +9,11 @@ use bevy::prelude::*;
 
 pub fn handle_rotate(
     grid_matrix: Query<&GridMatrix>,
-    query: Single<(Entity, &mut Transform), With<Tetrimino>>,
+    mut tetrimino_query: Query<(Entity, &mut Transform), With<Tetrimino>>,
     children_of: Query<&Children>,
     mut squares: Query<(&mut TetriminoSquare, &mut Transform), Without<Tetrimino>>,
 ) {
-    let (entity, mut transform) = query.into_inner();
+    let (entity, mut transform) = tetrimino_query.single_mut().unwrap();
     let children = children_of.get(entity).unwrap();
     let matrix = grid_matrix.single().unwrap();
 

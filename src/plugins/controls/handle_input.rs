@@ -11,7 +11,10 @@ use bevy::{
 };
 
 use crate::{
-    board::{grid_matrix::GridMatrix, tetrimino::Tetrimino, tetrimino_square::TetriminoSquare},
+    board::{
+        grid_matrix::GridMatrix, tetrimino::Tetrimino, tetrimino_shadow::UpdateShadow,
+        tetrimino_square::TetriminoSquare,
+    },
     game::game_state::GameState,
     plugins::{
         controls::{handle_movement::handle_move, handle_rotation::handle_rotate},
@@ -23,12 +26,13 @@ pub enum Movement {
     Left,
     Right,
     Down,
+    Space,
 }
 
 pub fn handle_input(
     game_state: Res<GameState>,
     mut commands: Commands,
-    tetrimino_query: Single<(Entity, &mut Transform), With<Tetrimino>>,
+    tetrimino_query: Query<(Entity, &mut Transform), With<Tetrimino>>,
     children_of: Query<&Children>,
     squares: Query<(&mut TetriminoSquare, &mut Transform), Without<Tetrimino>>,
     grid_matrix: Query<&GridMatrix>,
@@ -48,9 +52,11 @@ pub fn handle_input(
                 handle_rotate(grid_matrix, tetrimino_query, children_of, squares);
                 return;
             }
-            KeyCode::KeyA => movement = Some(Movement::Left),
-            KeyCode::KeyD => movement = Some(Movement::Right),
-            KeyCode::KeyS => movement = Some(Movement::Down),
+            KeyCode::KeyA | KeyCode::ArrowLeft => movement = Some(Movement::Left),
+            KeyCode::KeyD | KeyCode::ArrowRight => movement = Some(Movement::Right),
+            KeyCode::KeyS | KeyCode::ArrowDown => movement = Some(Movement::Down),
+            KeyCode::Space => movement = Some(Movement::Space),
+
             _ => {}
         }
     }

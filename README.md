@@ -6,9 +6,8 @@ Tetri-rs is a simple Tetris clone written in **Rust** using the **Bevy** game en
 
 ## Controls
 
-- **A** – Move left  
-- **D** – Move right  
-- **S** – Move down  
-- **W** – Rotate piece  
-
-
+- **A/ArrowLeft** – Move left  
+- **D/ArrorRight** – Move right  
+- **S/ArrowDown** – Move down  
+- **W/ArrowUp** – Rotate piece  
+- **Space** - Drop piece

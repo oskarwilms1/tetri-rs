@@ -4,17 +4,14 @@ use bevy::{
         entity::Entity,
         hierarchy::Children,
         query::{With, Without},
-        system::{Commands, Query, Res, Single},
+        system::{Commands, Query, Res},
     },
     input::{keyboard::KeyCode, ButtonInput},
     transform::components::Transform,
 };
 
 use crate::{
-    board::{
-        grid_matrix::GridMatrix, tetrimino::Tetrimino, tetrimino_shadow::UpdateShadow,
-        tetrimino_square::TetriminoSquare,
-    },
+    board::{grid_matrix::GridMatrix, tetrimino::Tetrimino, tetrimino_square::TetriminoSquare},
     game::game_state::GameState,
     plugins::{
         controls::{handle_movement::handle_move, handle_rotation::handle_rotate},

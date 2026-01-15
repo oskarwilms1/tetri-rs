@@ -109,5 +109,4 @@ pub fn update_shadow(
 
     shadow_transform.translation.y -=
         check_lowest_collision(matrix, tetrimino_transform.translation, &child_positions);
-    dbg!(shadow_transform);
 }

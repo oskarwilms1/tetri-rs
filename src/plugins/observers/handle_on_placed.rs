@@ -11,7 +11,7 @@ use crate::{
         tetrimino_square::TetriminoSquare,
     },
     game::game_state::{show_gameover, GameOverUI, GameState},
-    plugins::assets_plugin::TetriminoAssets,
+    plugins::{assets_plugin::TetriminoAssets, observers::shadow_update::UpdateShadow},
     scoreboard::scoreboard::{increment_score, Score, Scoreboard},
 };
 #[derive(Event)]
@@ -62,6 +62,8 @@ fn handle_respawn(
     let parent = parent_query.single().expect("Grid not found");
     commands.entity(entity).despawn();
     spawn_tetrimino(&mut commands, parent, tetrimino_assets);
+
+    commands.trigger(UpdateShadow);
 }
 fn update_matrix(
     commands: &mut Commands,

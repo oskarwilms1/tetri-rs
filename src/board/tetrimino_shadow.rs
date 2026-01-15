@@ -39,7 +39,7 @@ impl ShadowSquareBundle {
     pub fn new(mesh: Handle<Mesh>, color: Handle<ColorMaterial>) -> Self {
         Self {
             id: ShadowSquare,
-            transform: Transform::default()
+            transform: Transform::from_xyz(0.0, 0.0, 0.0)
                 .with_scale(Vec3::splat(CELL_SIZE - CELL_BORDER_THICKNESS)),
             mesh: Mesh2d(mesh.clone()),
             color: MeshMaterial2d(color.clone()),
@@ -54,7 +54,7 @@ pub fn tetrimino_shadow(mesh: Handle<Mesh>, color: Handle<ColorMaterial>) -> imp
         TetriminoShadow,
         GameEntity,
         Visibility::Visible,
-        Transform::from_xyz(3. * CELL_SIZE, 0., 0.5),
+        Transform::from_xyz(3. * CELL_SIZE, 0., 0.1),
         children![
             ShadowSquareBundle::new(mesh.clone(), color.clone()),
             ShadowSquareBundle::new(mesh.clone(), color.clone()),
@@ -101,11 +101,13 @@ pub fn update_shadow(
 
     for (position, shadow_child_entity) in child_positions.iter().zip(shadow_children.iter()) {
         if let Ok(mut shadow_transform) = shadow_squares_query.get_mut(*shadow_child_entity) {
-            shadow_transform.translation = *position;
+            shadow_transform.translation.x = position.x;
+            shadow_transform.translation.y = position.y;
         }
     }
 
-    shadow_transform.translation = tetrimino_transform.translation;
+    shadow_transform.translation.y = tetrimino_transform.translation.y;
+    shadow_transform.translation.x = tetrimino_transform.translation.x;
 
     shadow_transform.translation.y -=
         check_lowest_collision(matrix, tetrimino_transform.translation, &child_positions);

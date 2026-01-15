@@ -4,6 +4,7 @@ use bevy::{app::App, prelude::*};
 
 use crate::plugins::observers::{
     handle_on_placed::handle_on_placed, handle_on_restart::handle_on_restart,
+    shadow_update::handle_update_shadow,
 };
 
 pub struct ObserversPlugin;
@@ -12,5 +13,6 @@ impl Plugin for ObserversPlugin {
     fn build(&self, app: &mut App) {
         app.add_observer(handle_on_placed);
         app.add_observer(handle_on_restart);
+        app.add_observer(handle_update_shadow);
     }
 }

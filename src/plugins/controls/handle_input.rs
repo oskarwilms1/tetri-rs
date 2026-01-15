@@ -15,7 +15,7 @@ use crate::{
     game::game_state::GameState,
     plugins::{
         controls::{handle_movement::handle_move, handle_rotation::handle_rotate},
-        observers::handle_on_restart::Restart,
+        observers::{handle_on_restart::Restart, shadow_update::UpdateShadow},
     },
 };
 
@@ -47,6 +47,7 @@ pub fn handle_input(
         match key {
             KeyCode::KeyW => {
                 handle_rotate(grid_matrix, tetrimino_query, children_of, squares);
+                commands.trigger(UpdateShadow);
                 return;
             }
             KeyCode::KeyA | KeyCode::ArrowLeft => movement = Some(Movement::Left),
@@ -57,7 +58,6 @@ pub fn handle_input(
             _ => {}
         }
     }
-
     if let Some(movement) = movement {
         handle_move(
             &mut commands,
@@ -67,5 +67,6 @@ pub fn handle_input(
             movement,
             grid_matrix,
         );
+        commands.trigger(UpdateShadow);
     }
 }

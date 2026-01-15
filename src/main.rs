@@ -21,7 +21,7 @@ fn main() {
             primary_window: Some(Window {
                 title: "Tetri-rs".into(),
                 name: Some("Tetri-rs".into()),
-                resolution: WindowResolution::new(450, 900).with_scale_factor_override(1.0),
+                resolution: WindowResolution::new(900, 900).with_scale_factor_override(1.0),
                 resizable: false,
                 prevent_default_event_handling: false,
                 enabled_buttons: bevy::window::EnabledButtons {

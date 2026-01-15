@@ -1,5 +1,5 @@
 use bevy::color::palettes::tailwind::{
-    BLUE_500, CYAN_500, GREEN_500, ORANGE_500, PURPLE_500, RED_500, YELLOW_500,
+    BLUE_500, CYAN_500, GRAY_500, GREEN_500, ORANGE_500, PURPLE_500, RED_500, YELLOW_500,
 };
 use bevy::prelude::*;
 
@@ -9,7 +9,11 @@ use crate::board::tetrimino_square::TetriminoVariant;
 pub struct UiFont {
     pub font: Handle<Font>,
 }
-
+#[derive(Resource)]
+pub struct ShadowAssets {
+    pub mesh: Handle<Mesh>,
+    pub color: Handle<ColorMaterial>,
+}
 #[derive(Resource)]
 pub struct BackgroundAssets {
     pub cell_mesh: Handle<Mesh>,
@@ -53,7 +57,7 @@ fn load_assets(
     });
 
     commands.insert_resource(TetriminoAssets {
-        cell_mesh,
+        cell_mesh: cell_mesh.clone(),
         materials: [
             materials.add(ColorMaterial::from_color(CYAN_500)),
             materials.add(ColorMaterial::from_color(YELLOW_500)),
@@ -63,6 +67,10 @@ fn load_assets(
             materials.add(ColorMaterial::from_color(BLUE_500)),
             materials.add(ColorMaterial::from_color(ORANGE_500)),
         ],
+    });
+    commands.insert_resource(ShadowAssets {
+        mesh: cell_mesh.clone(),
+        color: materials.add(ColorMaterial::from_color(GRAY_500)),
     });
     let font = asset_server.load("fonts/BoldPixels.ttf");
 

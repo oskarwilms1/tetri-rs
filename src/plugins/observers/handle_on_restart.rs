@@ -9,7 +9,7 @@ use bevy::ecs::{
 use crate::{
     game::game_state::GameState,
     plugins::{
-        assets_plugin::{BackgroundAssets, TetriminoAssets, UiFont},
+        assets_plugin::{BackgroundAssets, ShadowAssets, TetriminoAssets, UiFont},
         startup_plugin::{restart, GameEntity},
     },
 };
@@ -24,6 +24,7 @@ pub fn handle_on_restart(
     query: Query<Entity, With<GameEntity>>,
     background_assets: Res<BackgroundAssets>,
     tetrimino_assets: ResMut<TetriminoAssets>,
+    shadow_assets: Res<ShadowAssets>,
     ui_font: Res<UiFont>,
 ) {
     restart(
@@ -32,6 +33,7 @@ pub fn handle_on_restart(
         query,
         background_assets,
         tetrimino_assets,
+        shadow_assets,
         ui_font,
     );
 }
